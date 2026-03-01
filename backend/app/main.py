@@ -1,11 +1,39 @@
-import json
-import threading
-import httpx
 import asyncio
+from contextlib import asynccontextmanager
+
+import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import select
 
-app = FastAPI()
+from app.database import engine, async_session
+from app.models import Base, Wallet
+from app.routers import wallet, trades
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # ── Database setup ──
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    # Seed wallet if it doesn't exist
+    async with async_session() as session:
+        result = await session.execute(select(Wallet).where(Wallet.id == 1))
+        if result.scalar_one_or_none() is None:
+            session.add(Wallet(id=1, balance=10000.0))
+            await session.commit()
+            print("Wallet seeded with $10,000")
+
+    # ── Price updater ──
+    await fetch_prices()
+    task = asyncio.create_task(price_updater())
+    print("Price updater task started.")
+    yield
+    task.cancel()
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Allow Next.js (localhost:3000) to call this API
 app.add_middleware(
@@ -16,11 +44,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Shared price store — updated by background WebSocket threads
+# ── Register routers ──
+app.include_router(wallet.router)
+app.include_router(trades.router)
+
+# ── Shared price store — updated by background task ──
 prices = {
-    "BTC" : {"price": None, "change": None},
-    "ETH" : {"price": None, "change": None},
-    "SOL" : {"price": None, "change": None},
+    "BTC": {"price": None, "change": None},
+    "ETH": {"price": None, "change": None},
+    "SOL": {"price": None, "change": None},
 }
 
 COINGECKO_URL = (
@@ -31,15 +63,14 @@ COINGECKO_URL = (
 )
 
 COIN_MAP = {
-    "bitcoin":  "BTC",
+    "bitcoin": "BTC",
     "ethereum": "ETH",
-    "solana":   "SOL",
+    "solana": "SOL",
 }
 
+
 async def fetch_prices():
-    """
-    Fetches latest prices from CoinGecko API and updates the shared `prices` store.
-    """
+    """Fetches latest prices from CoinGecko API and updates the shared prices store."""
     async with httpx.AsyncClient(timeout=10) as client:
         try:
             response = await client.get(COINGECKO_URL)
@@ -53,10 +84,9 @@ async def fetch_prices():
         except Exception as e:
             print(f"Error fetching prices: {e}")
 
+
 async def price_updater():
-    """
-    Background task that polls CoinGecko API every 2 seconds to update prices.
-    """
+    """Background task that polls CoinGecko API every 20 seconds to update prices."""
     while True:
         try:
             await fetch_prices()
@@ -64,42 +94,19 @@ async def price_updater():
             print(f"Error in price_updater: {e}")
         await asyncio.sleep(20)
 
+
 # ── API Endpoints ───────────────────────────────────────────────────────────
-
-@app.on_event("startup")
-async def startup_event():
-    """
-    Starts the background price updater task when the FastAPI app starts.
-    """
-    await fetch_prices()  # Initial fetch to populate prices
-    asyncio.create_task(price_updater())
-    print("Price updater task started.")
-
 
 @app.get("/prices")
 def get_prices():
     """
     Returns latest prices for BTC, ETH, SOL.
     Polled by the Next.js frontend every 2 seconds.
-    
-    Response shape:
-    {
-        "BTC": { "price": 65000.50, "change": 1.23 },
-        "ETH": { "price": 3200.10, "change": -0.45 },
-        "SOL": { "price": 145.80, "change": 2.10 }
-    }
     """
     return prices
 
+
 @app.get("/health")
 def health_check():
-    """
-    Health check endpoint.
-    Returns 200 OK if the backend is running.
-    """
+    """Health check endpoint. Returns 200 OK if the backend is running."""
     return {"status": "ok"}
-"""
-@app.get("/")
-def root():
-    return {"message": "crypto-sim backend is running"}
-"""

@@ -439,6 +439,413 @@ body {
 }
 
 /* ═══════════════════════════════════════════════
+   WALLET BAR
+═══════════════════════════════════════════════ */
+
+.wallet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.wallet-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.wallet-amount {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+/* ═══════════════════════════════════════════════
+   TRADE PAGE
+═══════════════════════════════════════════════ */
+
+.trade-page {
+  padding: 2.5rem 2.5rem;
+  max-width: 900px;
+}
+
+.trade-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ═══════════════════════════════════════════════
+   TRADE FORM
+═══════════════════════════════════════════════ */
+
+.trade-form {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.trade-form-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group.half {
+  flex: 1;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  border-color: rgba(247, 147, 26, 0.5);
+}
+
+.form-input::placeholder {
+  color: var(--muted);
+}
+
+/* Coin selector */
+.coin-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.coin-btn {
+  flex: 1;
+  padding: 0.55rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--muted2);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.coin-btn:hover {
+  border-color: var(--coin-color);
+  color: var(--coin-color);
+}
+
+.coin-btn.active {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--coin-color);
+  color: var(--coin-color);
+  box-shadow: 0 0 12px rgba(247, 147, 26, 0.1);
+}
+
+.current-price-hint {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  letter-spacing: 0.03em;
+}
+
+/* Side selector (Long / Short) */
+.side-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.side-btn {
+  flex: 1;
+  padding: 0.55rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--muted2);
+}
+
+.side-btn.long:hover,
+.side-btn.long.active {
+  border-color: var(--up);
+  color: var(--up);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.side-btn.short:hover,
+.side-btn.short.active {
+  border-color: var(--down);
+  color: var(--down);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+/* Leverage selector */
+.leverage-selector {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.leverage-btn {
+  flex: 1;
+  padding: 0.45rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--muted2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.leverage-btn:hover {
+  border-color: rgba(247, 147, 26, 0.4);
+  color: var(--text);
+}
+
+.leverage-btn.active {
+  background: rgba(247, 147, 26, 0.1);
+  border-color: #F7931A;
+  color: #F7931A;
+}
+
+/* Submit button */
+.trade-submit-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.trade-submit-btn.long {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.trade-submit-btn.short {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+}
+
+.trade-submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.trade-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trade-error {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--down);
+  margin-top: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(244, 63, 94, 0.08);
+  border-radius: 6px;
+}
+
+.trade-success {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--up);
+  margin-top: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(34, 197, 94, 0.08);
+  border-radius: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   OPEN POSITIONS
+═══════════════════════════════════════════════ */
+
+.positions-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.positions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.position-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  transition: border-color 0.15s;
+}
+
+.position-card:hover {
+  border-color: var(--border2);
+}
+
+.position-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.position-coin {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.position-side {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.06em;
+}
+
+.position-side.long {
+  color: var(--up);
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.position-side.short {
+  color: var(--down);
+  background: rgba(244, 63, 94, 0.12);
+}
+
+.position-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.position-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.detail-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.detail-value.profit {
+  color: var(--up);
+}
+
+.detail-value.loss {
+  color: var(--down);
+}
+
+.close-position-btn {
+  width: 100%;
+  margin-top: 0.8rem;
+  padding: 0.5rem;
+  background: rgba(244, 63, 94, 0.12);
+  color: var(--down);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.close-position-btn:hover {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: rgba(244, 63, 94, 0.4);
+}
+
+.close-position-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.positions-empty {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.positions-empty-text {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════ */
 
@@ -448,4 +855,6 @@ body {
   .main-content { margin-left: 0; }
   .ticker-page { padding: 1.5rem; }
   .cards-grid { grid-template-columns: 1fr; }
+  .trade-layout { grid-template-columns: 1fr; }
+  .trade-page { padding: 1.5rem; }
 }
